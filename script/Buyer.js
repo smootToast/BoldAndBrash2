@@ -1,5 +1,5 @@
 const {Order} = require('./order.js');
-
+const {Painting} = require('./TestPainting.js');
 function Buyer(fullName, username, address, password, email) {
 
     this.bidArrays = [];           //For bids on paintings
@@ -21,8 +21,15 @@ function Buyer(fullName, username, address, password, email) {
     }
 
     Buyer.prototype.insertOrders = function(artistName, paintingName, payment, confirmation) {
-        let temp = Order(this.fullName, artistName, paintingName, this.address, payment, confirmation, this.email);
-        this.orders.push(temp);
+       // let temp = Order(this.fullName, artistName, paintingName, this.address, payment, confirmation, this.email);
+        this.orders.push(paintingName);
+        for(let i = 0; i < this.bidArrays.length; i++) {
+            if(paintingName.name === this.bidArrays[i].name){
+                console.log(this.bidArrays[i].name + " has been removed");
+                this.bidArrays.splice(i,1);
+
+            }
+        }
     }
 
     Buyer.prototype.printBuyer = function() {
@@ -37,7 +44,7 @@ function Buyer(fullName, username, address, password, email) {
             console.log("N/A");
         } else {
             for (let i = 0; i < this.bidArrays.length; i++) {
-                console.log(this.bidArrays[i].name + " with a bid of " + this.bidArrays[i].highestBid);
+                console.log(this.bidArrays[i].name + " with a bid of " + this.bidArrays[i].newBid);
             }
         }
         this.printOrders();
@@ -60,14 +67,14 @@ function Buyer(fullName, username, address, password, email) {
         }
     }
 
-    Buyer.prototype.setBidder = function(bid, painting) {
+    Buyer.prototype.setBidders = function(bid, painting, buy) {
         let tempBuyer = new Buyer(this.fullName, this.username, this.address, this.password, this.email);
         for(let i = 0; i < this.bidArrays.length; i++){     //Checks to see if the buyer has a bid and wants to update it
             if(painting.name === this.bidArrays[i].name && this.bidArrays[i].price < bid){
                 this.bidArrays.splice(i, 1);
                 this.bidArrays.push(painting);
                 console.log("Successfully bid " + bid + " on " + painting.name);
-                return painting.setBidder(bid);
+                return painting.setBid(bid, buy);
             } else if(painting === this.bidArrays[i].name && this.bidArrays[i].price > bid) {
                 console.log("Sorry, your bid of " + bid + " is under " + this.bidArrays[i].price);
                 return;
@@ -77,7 +84,7 @@ function Buyer(fullName, username, address, password, email) {
         if(bid > painting.highestBid) {
             this.bidArrays.push(painting);
             console.log('Successfully bid ' + bid + ' on ' + painting.name);
-            return painting.setBidder(bid);
+            return painting.setBid(bid, buy);
         } else {
             console.log("Sorry, your bid of " + bid + " is under " + painting.highestBid);
         }
