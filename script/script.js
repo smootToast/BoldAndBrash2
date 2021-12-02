@@ -9,15 +9,10 @@ $(function() {
     var visa = $("#visa");
     var amex = $("#amex");
 
-    // Use the payform library to format and validate
-    // the payment fields.
-
     cardNumber.payform('formatCardNumber');
     CVV.payform('formatCardCVC');
 
-
     cardNumber.keyup(function() {
-
         amex.removeClass('transparent');
         visa.removeClass('transparent');
         mastercard.removeClass('transparent');
@@ -42,9 +37,7 @@ $(function() {
     });
 
     confirmButton.click(function(e) {
-
         e.preventDefault();
-
         var isCardValid = $.payform.validateCardNumber(cardNumber.val());
         var isCvvValid = $.payform.validateCardCVC(CVV.val());
 
