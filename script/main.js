@@ -18,7 +18,7 @@ let boldandBrash = new Painting("Bold and Brash", 99999999999999, 0, crab, "420x
 //const temp = [MonaLisa.name, Scream.name, ObamaPortrait.name, LincolnPortrait.name, boldandBrash.name];
 //const tempPaint = [MonaLisa, Scream, ObamaPortrait, LincolnPortrait, boldandBrash];
 
-const user = squid; //Placeholder, change squid to the user when they log in
+let user = squid; //Placeholder, change squid to the user when they log in
 
 const paintingList = [MonaLisa, Scream, ObamaPortrait, LincolnPortrait, boldandBrash];    //Used as the database for painting
 const artistList = [crab, squirrel];      //Used as the database for artists
@@ -82,6 +82,27 @@ const validateCardNumber = number => {
     return luhnCheck(number);
 }
 
+function addStock(painting){
+    if(painting.artist === user){
+        painting.stock++;
+    }
+    else {
+        console.log("You do not have permission to access this file");
+    }
+}
+
+function removeStock(painting){
+    if(painting.artist === user && painting.stock > 0){
+        painting.stock--;
+    }
+    if(painting.stock < 1) {
+        console.log("You do not have any more remaining");
+    }
+    if(painting.artist != user) {
+        console.log("You do not have permission to access this file");
+    }
+}
+
 const luhnCheck = val => {
     let checksum = 0; // running checksum total
     let j = 1; // takes value of 1 or 2
@@ -126,8 +147,11 @@ function buyPainting(painting, cardNumber) {        //Allows buyer to buy painti
 }
 
 function bidOnPainting(painting, cardNumber, bidAmount) {   //Allows buyer to bid on painting
+
     if(validateCardNumber(cardNumber)) {
-        user.setBidder(bidAmount, painting);
+
+        user.setBidders(bidAmount, painting, user);
+
     }
 }
 
@@ -135,14 +159,30 @@ function removeBid(painting) {      //Allows buyer to remove their bid
     user.removeBidItem(painting);
 }
 
-function sellToBuyer(){     //May need painting to include highest bidder
-
+function sellToBuyer(painting){     //May need painting to include highest bidder
+    user.buyOut(painting);
+    if(painting.stock == 0){
+        console.log("You have no more remaining");
+    }
 }
+/*
 ObamaPortrait.setPainting();
 squirrel.printArtist();
-
+*/
+console.log("***********************************");
+user.printBuyer();
+bidOnPainting(boldandBrash, 4235128399121223, 25);
+console.log("***********************************");
+user.printBuyer();
+boldandBrash.setPainting();
+console.log("***********************************");
+user = crab;
+sellToBuyer(boldandBrash);
+squid.printBuyer();
 console.log("***********************************");
 
+/*
 buyPainting(ObamaPortrait, 4235128399121223);
 ObamaPortrait.setPainting();
 squirrel.printArtist();
+*/

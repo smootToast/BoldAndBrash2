@@ -16,6 +16,47 @@ function Artist(fullName, username, password) {
 
     }
 
+    Artist.prototype.setBidder = function(bid, painting, buyer) {
+
+        for(let i = 0; i < buyer.bidArrays.length; i++){     //Checks to see if the buyer has a bid and wants to update it
+            if(painting.name === buyer.bidArrays[i].name && buyer.bidArrays[i].price < bid){
+                buyer.bidArrays.splice(i, 1);
+                buyer.bidArrays.push(painting);
+                console.log("Successfully bid " + bid + " on " + painting.name);
+                return painting.setBid(bid, buyer);
+            } else if(painting === buyer.bidArrays[i].name && buyer.bidArrays[i].price > bid) {
+                console.log("Sorry, your bid of " + bid + " is under " + buyer.bidArrays[i].price);
+                return;
+            }
+        }
+
+        if(bid > painting.highestBid) {
+            buyer.bidArrays.push(painting);
+            console.log('Successfully bid ' + bid + ' on ' + painting.name);
+
+            return painting.setBid(bid, buyer);
+        } else {
+            console.log("Sorry, your bid of " + bid + " is under " + painting.highestBid);
+        }
+
+    }
+
+    Artist.prototype.buyOut = function(painting) {
+        let isPainted = false;
+        for(let i = 0; i < this.paintingArray.length; i++ ){   //Checks to see if the artist actually has made the painting
+            if(this.paintingArray[i].name === painting.name) {
+                isPainted = true;
+                break;
+            }
+        }
+        if(!isPainted){
+            console.log("You do not have access to this painting");
+            return;
+        }
+        painting.stock--;
+        painting.highestBid.insertOrders(this.fullName,painting, "4235128399121223", true);
+    }
+
     /* Artist.prototype.setPrice = function (paintingArray) {
          //Talk to group on how to approach this
          //Theoretically this should work if Eliot runs it on his localhost(browser)
